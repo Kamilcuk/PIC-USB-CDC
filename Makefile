@@ -47,9 +47,10 @@ clean:
 	rm -f $(OBJDIR)/*.o
 	rm -f $(OBJDIR)/*.dep
 	rm -f $(OBJDIR)/*.hex
+	rm -f $(OBJDIR)/*.cod
+	rm -f $(OBJDIR)/.f
 	rm -f $(OBJDIR)/$(TARGET)
 
-distclean:
-	rm -f $(OBJDIR)/*
+distclean: clean
 	rmdir $(OBJDIR)
 
