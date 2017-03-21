@@ -26,9 +26,9 @@ THE SOFTWARE.
  */
 
 
-#include "pic18f4550.h"
+#include "pic18fregs.h"
+#include "pic-config.h"
 #include "usbcdc.h"
-#include "pic-config.c"
 #include "printft.h"
 
 void goto_bootloader(void) __naked
