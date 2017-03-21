@@ -33,16 +33,16 @@ TARGET = cdcacm.hex
 SRCS =	main.c usbcdc.c printft.c
  
 # The libraries that are used go here
-LIBS =  libc18f.lib libio18f4550.lib libm18f.lib libsdcc.lib 
+LIBS =  libc18f.lib libio18f2550.lib libm18f.lib libsdcc.lib 
 
 # Where to find the compiler
-SDCC = /Users/nyholku/sdcc-3.2.0/bin/sdcc
+SDCC = /usr/bin/sdcc
 
 # Compiler flags go here
-SDCCFLAGS = -V -L /Users/nyholku/sdcc-3.2.0/share/sdcc/non-free/lib/pic16 -Wl,-m,-s18f4550.lkr -mpic16 -p18f4550 --disable-warning 85 --std-sdcc99 --obanksel=3 --use-non-free
+SDCCFLAGS = -V -L /usr/share/sdcc/non-free/include/pic16 -Wl,-m,-s18f2550.lkr -mpic16 -p18f2550 --disable-warning 85 --std-sdcc99 --obanksel=3 --use-non-free
 
 # Where to store the target/intermediate/temporary/object files
-OBJDIR = ../obj
+OBJDIR = /tmp/obj
 
 #
 #-------------------------------------------------------------------------------
@@ -73,7 +73,6 @@ $(OBJDIR)/%.o: %.c $$(@D)/.f
 # Link the compiled files and libraries    
 $(OBJDIR)/$(TARGET): $(addprefix $(OBJDIR)/, $(SRCS:.c=.o)) 
 	$(SDCC) $(SDCCFLAGS) -o $(OBJDIR)/$(TARGET) $(addprefix $(OBJDIR)/, $(SRCS:.c=.o)) $(LIBS)
-	./load
 #
 #-------------------------------------------------------------------------------
 #
@@ -89,16 +88,6 @@ $(OBJDIR)/$(TARGET): $(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
 # in the sense that it does not contain the path, only the filename. Hence
 # the 'sed' has command has been mangled to inject the missing path to the fragment.
 #
-
-# First include the dependencies
-include $(addprefix $(OBJDIR)/, $(SRCS:.c=.dep))
-
-# Then recreate them
-$(OBJDIR)/%.dep: %.c $$(@D)/.f
-	 @set -e; rm -f $@; \
-	  $(SDCC) -c -M $(SDCCFLAGS) $< > $@.$$$$; \
-	  sed -e '1 s,^,$(OBJDIR)/,' -e 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
-     rm -f $@.$$$$
 
 #------------------------------------------------------------------------------
 #

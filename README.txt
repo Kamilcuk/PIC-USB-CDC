@@ -1,3 +1,11 @@
+# What is this
+
+It is minimal USB CDC implementation.  
+It is completly based on Kustaa Nyholm (30.3.2013).  
+Source code obtained from https://github.com/diegoherranz/PIC-USB-CDC  
+
+# Below is the original README.md
+
 30.3.2013/Kustaa Nyholm
 
 README.TXT for USB CDC ACM v 1.1 for PIC18F4550

@@ -19,33 +19,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
 Version 1.1     Compatible with SDCC 3.x
 
+modified by Kamil Cukrowski to use #pragma config lines
 */
 
-
-__code char __at 0x300000 CONFIG1L = 0x20; // USBDIV=1, CPUDIV=00, PLLDIV = 000
-
-__code char __at 0x300001 CONFIG1H = 0x0E; // IESO=0, FCMEN=0, FOSC = 1110
-
-__code char __at 0x300002 CONFIG2L = 0x20; // Brown out off, PWRT On
-
-__code char __at 0x300003 CONFIG2H = 0x00; // WDT off
-
-__code char __at 0x300004 CONFIG3L = 0xff; // Unused configuration bits
-
-__code char __at 0x300005 CONFIG3H = 0x81; // Yes MCLR, PORTB digital, CCP2 - RC1
-
-__code char __at 0x300006 CONFIG4L = 0x80; // ICD off, ext off, LVP off, stk ovr off
-
-__code char __at 0x300007 CONFIG4H = 0xff; // Unused configuration bits
-
-__code char __at 0x300008 CONFIG5L = 0xff; // No __code read protection
-
-__code char __at 0x300009 CONFIG5H = 0xff; // No data/boot read protection
-
-__code char __at 0x30000A CONFIG6L = 0xff; // No __code write protection
-
-__code char __at 0x30000B CONFIG6H = 0xff; // No data/boot/table protection
-
-__code char __at 0x30000C CONFIG7L = 0xff; // No table read protection
-
-__code char __at 0x30000D CONFIG7H = 0xff; // No boot table protection
+#pragma config PLLDIV = 5 // 20MHz / 5 =  4Mhz -> for PLL to get 96Mhz // 5 for 20Mhz
+#pragma config CPUDIV = OSC1_PLL2
+#pragma config USBDIV = 2 // from PLL -> 96Mhz / 2 = 48Mhz -> full speed usb
+#pragma config FOSC = HSPLL_HS // High Speed Crystal / Resonator with PLL enabled
+#pragma config IESO = ON, PWRT = ON, BOR = OFF, BORV = 3
+#pragma config VREGEN = ON, WDT = OFF, WDTPS = 32768, MCLRE = ON
+#pragma config LPT1OSC = OFF, PBADEN = OFF, CCP2MX = OFF, STVREN = ON, LVP = OFF
+#pragma config XINST = OFF, DEBUG = OFF, CP0 = OFF, CP1 = OFF, CP2 = OFF
+#pragma config CP3 = OFF, CPB = OFF, CPD = OFF, WRT0 = OFF, WRT1 = OFF, WRT2 = OFF, WRT3 = OFF
+#pragma config WRTB = OFF, WRTC = OFF, WRTD = OFF, EBTR0 = OFF, EBTR1 = OFF, EBTR2 = OFF
+#pragma config EBTR3 = OFF, EBTRB = OFF
+#ifdef __18f4550 // for pic18f4550 and (i guess!) also for pic18f4455
+#pragma config FCMEM = OFF, ICPRT = OFF
+#endif

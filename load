@@ -1,1 +1,0 @@
-pk2cmd -f../obj/cdcacm.hex -pPIC18f4550 /m /e /j /r

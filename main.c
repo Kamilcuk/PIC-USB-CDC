@@ -28,12 +28,16 @@ THE SOFTWARE.
 
 #include "pic18f4550.h"
 #include "usbcdc.h"
-#include "usb_defs.h"
 #include "pic-config.c"
 #include "printft.h"
 
+void goto_bootloader(void) __naked
+{
+	__asm goto 0x001C __endasm;
+}
 
-void high_isr(void) __shadowregs __interrupt 1
+
+void high_isr(void) __shadowregs __interrupt(1)
 {
 	if(PIR2bits.USBIF)
 	{
@@ -42,7 +46,7 @@ void high_isr(void) __shadowregs __interrupt 1
 	}
 }
 
-void low_isr(void) __shadowregs __interrupt 2
+void low_isr(void) __shadowregs __interrupt(2)
 {
 	;
 }
@@ -52,11 +56,11 @@ void putchar(char c) __wparam
 {
 	if (c=='\n') {
 		usbcdc_putchar('\r');
-		}
-
+	}
 	usbcdc_putchar(c);
-	if (c=='\n')
+	if (c=='\n') {
 		usbcdc_flush();
+	}
 }
 
 char getchar() {
@@ -67,19 +71,32 @@ char getchar() {
 void main(void) {
 	OSCCON = 0x70;
 
+
+	        TRISA = TRISB = TRISC = 0x00;
+		      PORTA = PORTB = PORTC = 0xff;
+
+
 	usbcdc_init();
 
 	INTCONbits.PEIE = 1;
 	INTCONbits.GIE = 1;
+	USB_interrupt_priority_high();
+	USB_interrupt_enable();
 
-	while (usbcdc_device_state != CONFIGURED)
-		;
+	usbcdc_wait_configured();
 
-	printft("Wellcome!\n");
-
+	printft("Wellcome! Compilation time:" __TIME__ "\n");
 
 	while (1) {
-		printft("%02d\n",getchar());
+		char c = getchar();
+		switch(c) {
+		case 'a':
+			goto_bootloader();
+			break;
+		default:
+			printft("%02d\n",c);
+			break;
+		}
 	}
 
 }
